@@ -110,3 +110,43 @@ Guidelines:
 - Keep comment style **consistent** across the project
 - Update comments when code changes so they do not become stale
 - If a section needs too much explanation, consider extracting a helper function
+
+
+## Pull Request Description Format
+
+When opening a pull request, use the following format:
+
+```md
+## Summary
+
+Briefly explain what this pull request does.
+
+## Changes
+
+- List the main changes made in this PR
+- Keep each bullet short and specific
+- Focus on what changed, not every tiny implementation detail
+
+## Testing
+
+- Explain how the change was tested
+- If no tests were run, explain why
+```
+
+### Example
+
+```md
+## Summary
+
+Adds a Git workflow practice section to the README.
+
+## Changes
+
+- Documents the engineer workflow
+- Documents the reviewer workflow
+- Adds cleanup steps after merge
+
+## Testing
+
+- Not run; documentation-only change
+```
