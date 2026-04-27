@@ -104,6 +104,21 @@ Rules:
 
 - This follows the Conventional Commits spec, which is the most common standard in professional projects.  
 
+## Pseudocode Guidelines
+
+1. Comment **why**, not just **what**.
+2. Use pseudocode only for **non-obvious logic**, not every simple line.
+3. Prefer **short comments above a block** instead of line-by-line narration.
+4. Keep comments **brief, specific, and direct**.
+5. Use pseudocode to explain **flow, intent, business rules, or edge cases**.
+6. Avoid comments that simply **repeat the code**.
+7. Prefer **clear function and variable names** before adding extra comments.
+8. Use pseudocode to explain **important assumptions** and **security-sensitive behavior**.
+9. Remove or tighten **temporary learning comments** before finishing the file.
+10. Keep comment style **consistent** across the project.
+11. Update comments whenever the code changes so they do not go stale.
+12. When a section needs too much explanation, consider **extracting a helper function** instead of adding more comments.
+
 ## Do
 
 - Read [CookShelf-v1-design-doc.md](./CookShelf-v1-design-doc.md) before any non-trivial change to data models or AI pipelines.
