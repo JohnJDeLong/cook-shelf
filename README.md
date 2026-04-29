@@ -50,6 +50,12 @@ pnpm db:seed                  # seeds top ~100 ingredient densities
 pnpm dev
 ```
 
+## Tooling conventions
+
+- The project is configured as ES modules with `"type": "module"` in `package.json`.
+- Use `pnpm dev` for the app server.
+- Use `pnpm dev:all` when you want the app server and Prisma Studio running together via `concurrently`.
+
 ## Project docs
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — system design, tech stack, key decisions

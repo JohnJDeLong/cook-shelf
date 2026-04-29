@@ -23,6 +23,7 @@ Single solo developer. Code should be production-quality but pragmatic — this 
 ## Code conventions
 
 - TypeScript `strict` mode. No `any` without a comment justifying it.
+- This project uses ES modules (`"type": "module"`). Prefer `import` / `export` and ESM-compatible config files.
 - Server-side: route handlers in `app/api/[resource]/route.ts`. Validate input with Zod.
 - **Authorization is app-layer, not RLS.** Every route handler / server action starts with `const user = await requireUser()`. Every DB query goes through a scoped helper in `lib/db/<resource>.ts` that always includes `userId: user.id` in `where`. Direct `prisma.recipe.findMany()` from a route is forbidden. RLS is enabled on tables as a safety-net but does not fire under Prisma queries — do not rely on it.
 - Database access goes through `lib/db.ts` (Prisma singleton) via the scoped helpers in `lib/db/`. Never import `PrismaClient` directly in routes or components.
@@ -65,6 +66,7 @@ prisma/
 | Command | Purpose |
 |---|---|
 | `pnpm dev` | Local dev server |
+| `pnpm dev:all` | Local dev server + Prisma Studio via `concurrently` |
 | `pnpm build` | Production build |
 | `pnpm lint` | eslint |
 | `pnpm typecheck` | `tsc --noEmit` |
