@@ -13,7 +13,7 @@ The 4-week build. Goal: mom is using it.
 - Recipe library with cards, tags, source/provenance
 - Full-text + structured search (diet, cuisine, course, calorie range)
 - Servings scaling
-- Volume ↔ weight conversion (seeded densities + Claude fallback)
+- Volume ↔ weight conversion (seeded densities + OpenAI fallback)
 - AI-estimated nutrition
 - Dish Story (cultural origin, historical note, regional variations, serving traditions, fun facts)
 - Single-user UX (multi-user-ready schema)

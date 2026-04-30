@@ -4,7 +4,7 @@ Working task list. Check things off as you ship them. New ideas go in **Backlog*
 
 ## Day 0 — Settled architectural patterns (read before coding)
 
-These are the three decisions that bite later if you fudge them now. Confirmed in [CookShelf-v1-design-doc.md §6](./CookShelf-v1-design-doc.md) and [ARCHITECTURE.md](./ARCHITECTURE.md). Don't drift from them without an explicit decision.
+These are the three decisions that bite later if you fudge them now. Confirmed in [DESIGN.md §6](./DESIGN.md) and [ARCHITECTURE.md](./ARCHITECTURE.md). Don't drift from them without an explicit decision.
 
 - [ ] **Identity:** `User.id` is a `uuid` mirroring `auth.users.id`. No `cuid()`. Postgres trigger creates the User row on signup.
 - [ ] **Authorization:** Prisma is the only DB layer; bypasses RLS. App-layer guard is `requireUser()` + scoped `lib/db/<resource>.ts` helpers. RLS exists as documentation/safety-net on tables and as the *real* guard on Storage.
@@ -16,9 +16,10 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Create Supabase Storage bucket: `recipe-images` (private, signed URL access)
 - [ ] Add Storage RLS policies: users can read/write only `recipe-images/{auth.uid()}/...`
 - [ ] Get Anthropic API key
+- [ ] Get OpenAI API key
 - [ ] Reserve domain (cookshelf.app or fallback)
 - [ ] Init repo, push to GitHub
-- [ ] Set up `.env.example` with: `DATABASE_URL` (pooler), `DIRECT_URL` (direct, for migrations), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`
+- [ ] Set up `.env.example` with: `DATABASE_URL` (pooler), `DIRECT_URL` (direct, for migrations), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`
 
 ## Week 1 — Foundation
 
@@ -68,11 +69,11 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Combine free-text query with structured filters
 - [ ] Servings scaler (-/+ buttons, ×2, ×0.5 quick actions). Lines with `quantity = null` (pinch / to taste) display verbatim and don't scale.
 - [ ] Seed top ~100 ingredient densities (`prisma/seed.ts`)
-- [ ] Claude fallback for unknown ingredient densities (`lib/ai/lookupIngredientDensity.ts`)
+- [ ] OpenAI fallback for unknown ingredient densities (`lib/ai/lookupIngredientDensity.ts`)
 - [ ] `lib/units/toGrams.ts` conversion function + tests (must handle `quantity = null`)
 - [ ] User unit preference (`UnitSystem` — IMPERIAL / METRIC / MIXED)
 - [ ] Display toggle on recipe detail page
-- [ ] `POST /api/recipes/:id/nutrition` — synchronous Claude call (`lib/ai/estimateNutrition.ts`)
+- [ ] `POST /api/recipes/:id/nutrition` — synchronous OpenAI call (`lib/ai/estimateNutrition.ts`)
 - [ ] Client orchestration: after `POST /api/recipes` returns, fire the nutrition endpoint in parallel with Dish Story
 - [ ] Skeleton/loading state on the nutrition panel until the call resolves
 - [ ] Lazy retrigger via `useEffect` if Nutrition is still null on detail-page load
@@ -83,7 +84,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 
 *Goal: real product, real users.*
 
-- [ ] `POST /api/recipes/:id/dish-story` — synchronous Claude call (`lib/ai/generateDishStory.ts`)
+- [ ] `POST /api/recipes/:id/dish-story` — synchronous OpenAI call (`lib/ai/generateDishStory.ts`)
 - [ ] Client fires it after save in parallel with the nutrition endpoint
 - [ ] Skeleton/loading state on the Dish Story panel until the call resolves
 - [ ] Lazy retrigger via `useEffect` if DishStory is still null on detail-page load

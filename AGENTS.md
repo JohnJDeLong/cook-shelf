@@ -16,7 +16,8 @@ Single solo developer. Code should be production-quality but pragmatic — this 
 - Supabase Auth (Postgres-native, RLS-aware)
 - Supabase Storage for recipe images
 - Tailwind + shadcn/ui
-- Anthropic SDK (Claude) for all AI features
+- Anthropic SDK (Claude) for image-based recipe extraction
+- OpenAI SDK for nutrition estimation, Dish Story generation, and ingredient density lookup
 - pnpm for package management
 - vitest for tests
 
@@ -27,8 +28,9 @@ Single solo developer. Code should be production-quality but pragmatic — this 
 - Server-side: route handlers in `app/api/[resource]/route.ts`. Validate input with Zod.
 - **Authorization is app-layer, not RLS.** Every route handler / server action starts with `const user = await requireUser()`. Every DB query goes through a scoped helper in `lib/db/<resource>.ts` that always includes `userId: user.id` in `where`. Direct `prisma.recipe.findMany()` from a route is forbidden. RLS is enabled on tables as a safety-net but does not fire under Prisma queries — do not rely on it.
 - Database access goes through `lib/db.ts` (Prisma singleton) via the scoped helpers in `lib/db/`. Never import `PrismaClient` directly in routes or components.
-- AI calls go through `lib/ai/` modules. One module per task: `extractRecipe.ts`, `estimateNutrition.ts`, `generateDishStory.ts`, `lookupIngredientDensity.ts`. Each module exports one function with a typed return.
-- All Claude calls use structured outputs (tool use with a defined schema). No regex parsing of free-form responses.
+- AI calls go through `lib/ai/` modules. One module per task: `extractRecipe.ts`, `estimateNutrition.ts`, `generateDishStory.ts`, `lookupIngredientDensity.ts`. Each module owns its provider choice, model constant, prompt, schema, token-usage logging, and typed return.
+- Provider split for v1: Claude handles image-based recipe extraction; OpenAI handles nutrition estimation, Dish Story generation, and ingredient density lookup.
+- All provider calls use structured outputs with a defined schema. No regex parsing of free-form responses.
 - **Async work for v1 = synchronous endpoints.** Nutrition and Dish Story are fired by the client after save (`POST /api/recipes/:id/nutrition`, `POST /api/recipes/:id/dish-story`) and run synchronously inside normal route handlers. No background jobs, no `waitUntil`, no queue. Don't add one without discussion.
 - **Image storage:** the DB stores object keys (`originalImagePath`), not URLs. Signed read URLs are minted at render time via `lib/supabase/storage.ts → signedUrlFor(path)`. Never persist a signed URL to the database.
 - React: server components by default. Mark client components with `"use client"` only when state, effects, or browser APIs are needed.
@@ -52,7 +54,7 @@ lib/
   auth/
     requireUser.ts        # server-side helper: returns User or throws 401
   supabase/               # Supabase clients (server.ts, browser.ts, storage.ts)
-  ai/                     # Claude call modules
+  ai/                     # provider-scoped AI task modules
   units/                  # volume↔weight conversion
   search/                 # FTS query builder
 prisma/
@@ -123,19 +125,19 @@ Rules:
 
 ## Do
 
-- Read [CookShelf-v1-design-doc.md](./CookShelf-v1-design-doc.md) before any non-trivial change to data models or AI pipelines.
+- Read [DESIGN.md](./DESIGN.md) before any non-trivial change to data models or AI pipelines.
 - Update [TODO.md](./TODO.md) when you finish a task — check the box and (if a milestone) add it under "Done" with a date.
 - Add a Prisma migration for any schema change. Never edit an existing migration after it's been applied.
 - Write tests for unit conversion (`lib/units/`), recipe scaling, and any pure utility logic.
 - Use seeded canonical ingredient names (case-insensitive lookup) before creating a new `Ingredient` row.
-- When adding a Claude call, define the model name and prompt as exported constants. Log token usage for cost tracking.
+- When adding an AI provider call, define the provider, model name, prompt, and schema as exported constants. Log token usage for cost tracking.
 - When proposing UI text, prefer "estimated" or "generated" over "AI". The user shouldn't have to think about which features are AI-powered.
 
 ## Don't
 
 - Don't add a new dependency without checking whether shadcn/ui or an existing lib already covers it.
 - Don't introduce a vector DB. Postgres FTS handles v1; pgvector is the v2 path.
-- Don't bypass the `lib/ai/` layer to call Claude directly from a route handler or component.
+- Don't bypass the `lib/ai/` layer to call Claude, OpenAI, or any other AI provider directly from a route handler or component.
 - Don't fully normalize ingredient `rawText` ("2½ cups all-purpose flour, sifted") — keep the raw line and parse what you need into structured fields.
 - Don't make `RecipeIngredient.quantity` non-nullable. Real recipes have "pinch", "to taste", "juice of 1 lemon". Use `quantityText` for non-numeric quantities.
 - Don't store signed Storage URLs in the database. Store the object key (`originalImagePath`) and mint signed URLs at render time.
