@@ -57,3 +57,5 @@ coverage/
 *.local
 .notes/
 scratch/
+
+/lib/generated/prisma

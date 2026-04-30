@@ -1,0 +1,176 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String     @id @db.Uuid
+  email      String     @unique
+  name       String?
+  unitSystem UnitSystem @default(MIXED)
+  recipes    Recipe[]
+  createdAt  DateTime   @default(now())
+}
+
+enum UnitSystem {
+  IMPERIAL
+  METRIC
+  MIXED
+}
+
+model Recipe {
+  id     String @id @default(cuid())
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  title        String
+  description  String?
+  instructions String
+  servings     Int     @default(1)
+  prepTimeMin  Int?
+  cookTimeMin  Int?
+
+  sourceType  SourceType?
+  sourceName  String?
+  sourceYear  Int?
+  sourceUrl   String?
+  familyNotes String?
+
+  originalImagePath String?
+
+  ingredients RecipeIngredient[]
+  tags        RecipeTag[]
+  nutrition   Nutrition?
+  dishStory   DishStory?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([userId])
+}
+
+enum SourceType {
+  FAMILY
+  COOKBOOK
+  WEBSITE
+  HANDWRITTEN
+  RESTAURANT
+  ORIGINAL
+}
+
+model Ingredient {
+  id   String @id @default(cuid())
+  name String @unique
+
+  gramsPerCup   Float?
+  gramsPerTbsp  Float?
+  avgWeightG    Float?
+  densitySource DensitySource?
+
+  recipeUses RecipeIngredient[]
+}
+
+enum DensitySource {
+  SEED
+  AI_ESTIMATE
+  USDA
+  USER_PROVIDED
+}
+
+model RecipeIngredient {
+  id           String @id @default(cuid())
+  recipeId     String
+  ingredientId String
+
+  quantity     Float?
+  quantityText String?
+  unit         String
+  rawText      String
+  notes        String?
+  optional     Boolean @default(false)
+  orderIdx     Int
+
+  quantityG        Float?
+  isWeightOriginal Boolean @default(false)
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@index([recipeId])
+  @@index([ingredientId])
+}
+
+model Tag {
+  id       String      @id @default(cuid())
+  name     String      @unique
+  category TagCategory
+
+  recipes RecipeTag[]
+}
+
+model RecipeTag {
+  recipeId String
+  tagId    String
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([recipeId, tagId])
+  @@index([tagId])
+}
+
+enum TagCategory {
+  DIET
+  CUISINE
+  COURSE
+  TECHNIQUE
+  OCCASION
+}
+
+model Nutrition {
+  id       String @id @default(cuid())
+  recipeId String @unique
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  perServing Boolean @default(true)
+  calories   Int?
+  proteinG   Float?
+  carbsG     Float?
+  fatG       Float?
+  fiberG     Float?
+  sugarG     Float?
+  sodiumMg   Float?
+
+  source     NutritionSource @default(AI_ESTIMATE)
+  confidence Float?
+}
+
+enum NutritionSource {
+  AI_ESTIMATE
+  USDA
+  EDAMAM
+  USER_PROVIDED
+}
+
+model DishStory {
+  id       String @id @default(cuid())
+  recipeId String @unique
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  culturalOrigin     String?
+  historicalNote     String?
+  regionalVariations String?
+  servingTraditions  String?
+  funFacts           String?
+
+  generatedAt DateTime @default(now())
+  model       String?
+}
