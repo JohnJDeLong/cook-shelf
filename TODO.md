@@ -10,7 +10,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] **Authorization:** Prisma is the only DB layer; bypasses RLS. App-layer guard is `requireUser()` + scoped `lib/db/<resource>.ts` helpers. RLS exists as documentation/safety-net on tables and as the *real* guard on Storage.
 - [ ] **Async work:** Nutrition + Dish Story are synchronous endpoints fired by the client after save (parallel). No queue, no `waitUntil`, no jobs.
 
-## Pre-flight (before Week 1)
+## Pre-flight 
 
 - [ ] Create Supabase project (free tier)
 - [ ] Create Supabase Storage bucket: `recipe-images` (private, signed URL access)
@@ -21,7 +21,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Init repo, push to GitHub
 - [ ] Set up `.env.example` with: `DATABASE_URL` (pooler), `DIRECT_URL` (direct, for migrations), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`
 
-## Week 1 — Foundation
+## Foundation
 
 *Goal: log in, manually type a recipe, see it in the list.*
 
@@ -43,7 +43,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Edit form (`/recipes/[id]/edit`)
 - [ ] Milestone hit ✅
 
-## Week 2 — AI ingestion
+## AI ingestion
 
 *Goal: photo of a handwritten recipe → structured row in the database.*
 
@@ -59,7 +59,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Paste-text fallback path
 - [ ] Milestone hit ✅
 
-## Week 3 — Search, scaling, nutrition, units
+## Search, scaling, nutrition, units
 
 *Goal: search works, ×2 works, weight display works.*
 
@@ -80,7 +80,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Regenerate-nutrition button (hits the same endpoint)
 - [ ] Milestone hit ✅
 
-## Week 4 — Dish Story + polish + ship
+## Dish Story + polish + ship
 
 *Goal: real product, real users.*
 
