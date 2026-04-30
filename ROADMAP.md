@@ -9,6 +9,7 @@ A roadmap is for "we know we want this eventually" items — features that aren'
 The 4-week build. Goal: mom is using it.
 
 - Image-based recipe ingestion (Claude Vision)
+- Mobile-first web upload flow for taking recipe photos from a phone
 - Manual entry + paste-text entry
 - Recipe library with cards, tags, source/provenance
 - Full-text + structured search (diet, cuisine, course, calorie range)
@@ -49,9 +50,9 @@ Multi-user features, when there's demand.
 - Meal planning calendar
 - Weekly meal plan → shopping list
 
-## v4 — Mobile and ambient
+## v4 — Native mobile and ambient
 
-Native and hands-free.
+Native mobile becomes worthwhile if the v1 mobile web upload flow feels clunky in real kitchen use.
 
 - iOS app (React Native or native)
 - "Cook with me" mode — step-by-step with timers and hands-free advance

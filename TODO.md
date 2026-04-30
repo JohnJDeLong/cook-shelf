@@ -49,6 +49,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 
 - [ ] Supabase Storage helpers (`lib/supabase/storage.ts`) — signed upload URL, `signedUrlFor(path)` for reads
 - [ ] `app/api/uploads/` — issues signed upload URLs scoped to `recipe-images/{userId}/...`
+- [ ] Mobile-first image capture flow using a file input with camera hint (`accept="image/*"` and `capture="environment"`)
 - [ ] Client-side upload component (drag-drop or file picker, uploads directly to Supabase Storage)
 - [ ] `app/api/extract/` — accepts an object key, mints a signed read URL, calls Claude Vision with a structured-output schema
 - [ ] Extraction schema: `quantity` is **nullable** (parser only fills it when confident); `quantityText` carries fuzzy quantities ("pinch", "to taste"); `rawText` always present
@@ -93,7 +94,7 @@ These are the three decisions that bite later if you fudge them now. Confirmed i
 - [ ] Empty states (no recipes yet, no search results)
 - [ ] Error states (extract failed, save failed, AI timeout)
 - [ ] Loading states / skeletons
-- [ ] Mobile responsiveness pass
+- [ ] Mobile responsiveness pass focused on kitchen/phone usage
 - [ ] Deploy to Vercel (Supabase already lives in the cloud)
 - [ ] Hand the URL to mom
 - [ ] Milestone hit ✅
